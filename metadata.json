@@ -1,0 +1,5 @@
+{
+  "name": "System Architect AI",
+  "description": "Android-style prototype for summarizing dictations and generating system development plans.",
+  "requestFramePermissions": ["microphone"]
+}
