@@ -34,6 +34,7 @@ export default function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [plan, setPlan] = useState<SystemPlan | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [passcode, setPasscode] = useState('');
   
   // Web Speech API
   const recognitionRef = useRef<any>(null);
@@ -77,6 +78,11 @@ export default function App() {
   const handleGenerate = async () => {
     if (!transcript.trim()) return;
     
+    if (passcode !== process.env.PASSCODE) {
+      setError('Invalid passcode.');
+      return;
+    }
+
     setIsProcessing(true);
     setError(null);
     try {
@@ -125,15 +131,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F7F9FB] text-[#1C1B1F] font-sans selection:bg-indigo-100">
-      {/* Android Status Bar Simulation */}
-      <div className="h-8 bg-white flex items-center justify-between px-6 text-xs font-medium text-gray-500">
-        <span>9:41</span>
-        <div className="flex gap-1.5 items-center">
-          <div className="w-4 h-4 rounded-full border border-gray-300 flex items-center justify-center text-[8px]">5G</div>
-          <Smartphone size={12} />
-        </div>
-      </div>
-
       {/* App Bar */}
       <header className="bg-white px-4 py-3 flex items-center justify-between shadow-sm sticky top-0 z-10">
         <div className="flex items-center gap-4">
@@ -148,7 +145,7 @@ export default function App() {
           )}
           <div>
             <h1 className="text-lg font-semibold tracking-tight">System Architect</h1>
-            <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Kotlin Prototype</p>
+            <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">let's ask 愛</p>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -205,23 +202,33 @@ export default function App() {
                   {isRecording ? <Square size={32} fill="currentColor" /> : <Mic size={32} />}
                 </button>
 
-                <button
-                  onClick={handleGenerate}
-                  disabled={!transcript.trim() || isProcessing}
-                  className="w-full py-4 bg-[#1C1B1F] text-white rounded-2xl font-bold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:bg-black shadow-xl"
-                >
-                  {isProcessing ? (
-                    <>
-                      <RefreshCw className="animate-spin" size={20} />
-                      Architecting System...
-                    </>
-                  ) : (
-                    <>
-                      <Send size={20} />
-                      Generate Development Plan
-                    </>
-                  )}
-                </button>
+                <div className="flex w-full gap-4">
+                  <input
+                    type="password"
+                    maxLength={4}
+                    value={passcode}
+                    onChange={(e) => setPasscode(e.target.value)}
+                    placeholder="Code"
+                    className="w-24 text-center py-4 bg-white border-2 border-gray-100 rounded-2xl font-bold shadow-xl shadow-gray-100 focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none transition-all tracking-widest text-lg"
+                  />
+                  <button
+                    onClick={handleGenerate}
+                    disabled={!transcript.trim() || isProcessing}
+                    className="flex-1 py-4 bg-[#1C1B1F] text-white rounded-2xl font-bold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:bg-black shadow-xl"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <RefreshCw className="animate-spin" size={20} />
+                        Architecting...
+                      </>
+                    ) : (
+                      <>
+                        <Send size={20} />
+                        Generate Plan
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </motion.div>
           ) : (
@@ -313,19 +320,21 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        {error && (
-          <div className="mt-4 p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-medium border border-red-100">
-            {error}
-          </div>
-        )}
+        <AnimatePresence>
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="mt-4 p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-medium border border-red-100 flex items-center gap-2"
+            >
+              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
 
-      {/* Android Navigation Bar Simulation */}
-      <div className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-100 flex items-center justify-around px-12">
-        <div className="w-4 h-4 border-2 border-gray-400 rounded-sm rotate-45" />
-        <div className="w-5 h-5 border-2 border-gray-400 rounded-full" />
-        <div className="w-4 h-4 border-2 border-gray-400 rounded-sm" />
-      </div>
     </div>
   );
 }
