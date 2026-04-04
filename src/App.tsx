@@ -20,7 +20,7 @@ import {
   MoreVertical
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { generateSystemPlan, SystemPlan } from './services/geminiService';
+import { generateSystemPlan, SystemPlan } from './services/ollamaServices';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
