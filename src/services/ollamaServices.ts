@@ -8,7 +8,7 @@ export interface SystemPlan {
 }
 
 export async function generateSystemPlan(dictation: string): Promise<SystemPlan> {
-  const OLLAMA_URL = process.env.OLLAMA_BASE_URL || "http://localhost:11434/api/generate";
+  const OLLAMA_URL = process.env.OLLAMA_BASE_URL || "http://ssujen.dev:11434/api/generate";
   const MODEL = "gemma4:e2b";
 
   const prompt = `Analyze the following dictation and generate a structured system development plan in JSON format.
