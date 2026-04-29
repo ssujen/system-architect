@@ -4,15 +4,15 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Mic, 
-  Square, 
-  Send, 
-  ClipboardList, 
-  Layout, 
-  ChevronRight, 
-  CheckCircle2, 
-  Copy, 
+import {
+  Mic,
+  Square,
+  Send,
+  ClipboardList,
+  Layout,
+  ChevronRight,
+  CheckCircle2,
+  Copy,
   RefreshCw,
   Smartphone,
   ArrowLeft,
@@ -20,7 +20,7 @@ import {
   MoreVertical
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { generateSystemPlan, SystemPlan } from './services/geminiService';
+import { generateSystemPlan, SystemPlan } from './services/hfServices';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -35,7 +35,7 @@ export default function App() {
   const [plan, setPlan] = useState<SystemPlan | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [passcode, setPasscode] = useState('');
-  
+
   // Web Speech API
   const recognitionRef = useRef<any>(null);
 
@@ -77,7 +77,7 @@ export default function App() {
 
   const handleGenerate = async () => {
     if (!transcript.trim()) return;
-    
+
     if (passcode !== process.env.PASSCODE) {
       setError('Invalid passcode.');
       return;
@@ -97,7 +97,7 @@ export default function App() {
   };
 
   const [copied, setCopied] = useState(false);
-  
+
   const copyToClipboard = async (text: string) => {
     try {
       if (navigator.clipboard && window.isSecureContext) {
@@ -161,7 +161,7 @@ export default function App() {
       <main className="max-w-md mx-auto p-6 pb-32">
         <AnimatePresence mode="wait">
           {!plan ? (
-            <motion.div 
+            <motion.div
               key="input"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -194,8 +194,8 @@ export default function App() {
                   onClick={toggleRecording}
                   className={cn(
                     "w-20 h-20 rounded-full flex items-center justify-center transition-all shadow-2xl active:scale-95",
-                    isRecording 
-                      ? "bg-red-500 text-white ring-8 ring-red-100" 
+                    isRecording
+                      ? "bg-red-500 text-white ring-8 ring-red-100"
                       : "bg-indigo-600 text-white hover:bg-indigo-700 ring-8 ring-indigo-50"
                   )}
                 >
@@ -232,7 +232,7 @@ export default function App() {
               </div>
             </motion.div>
           ) : (
-            <motion.div 
+            <motion.div
               key="result"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -289,7 +289,7 @@ export default function App() {
               </section>
 
               <div className="pt-4 space-y-3">
-                <button 
+                <button
                   onClick={() => copyToClipboard(JSON.stringify(plan, null, 2))}
                   className={cn(
                     "w-full py-4 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all",
@@ -308,7 +308,7 @@ export default function App() {
                     </>
                   )}
                 </button>
-                <button 
+                <button
                   onClick={reset}
                   className="w-full py-4 bg-white border-2 border-gray-100 text-gray-600 rounded-2xl font-bold flex items-center justify-center gap-2"
                 >
@@ -322,7 +322,7 @@ export default function App() {
 
         <AnimatePresence>
           {error && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}

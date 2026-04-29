@@ -1,9 +1,9 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig, loadEnv} from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
-export default defineConfig(({mode}) => {
+export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
   return {
     base: './',
@@ -11,6 +11,8 @@ export default defineConfig(({mode}) => {
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
       'process.env.PASSCODE': JSON.stringify(env.PASSCODE),
+      'process.env.HF_TOKEN': JSON.stringify(env.HF_TOKEN),
+      'process.env.HUGGINGFACE_MODEL_ID': JSON.stringify(env.HUGGINGFACE_MODEL_ID),
     },
     resolve: {
       alias: {
@@ -29,13 +31,13 @@ export default defineConfig(({mode}) => {
       },
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
-      hmr: process.env.DISABLE_HMR !== 'true',
-      allowedHosts: [
-        'ssujen.dev',
-        '.ssujen.dev' // Optional: allows all subdomains as well
-      ] 
+      proxy: {
+        '/hf-api': {
+          target: 'https://api-inference.huggingface.co',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/hf-api/, '')
+        }
+      }
     },
   };
 });
